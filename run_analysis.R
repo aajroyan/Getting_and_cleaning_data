@@ -1,3 +1,5 @@
+library(reshape2)
+
 X_train <- read.table("train/X_train.txt", quote="\"")
 X_test <- read.table("test/X_test.txt", quote="\"")
 y_test <- read.table("test/y_test.txt", quote="\"")
@@ -18,6 +20,9 @@ DataSet$Activity = activity_labels[DataSet$Activity,2]
 DataSet = DataSet[,grepl( "mean()" , names( DataSet ) ) | grepl( "std()" , names( DataSet )) 
                   |grepl( "Activity" , names( DataSet )) | grepl( "Subject" , names( DataSet ) ) ]
 
+MeltedDataSet <- melt(DataSet, id = c("Subject", "Activity"))
+CastedDataSet <- dcast(MeltedDataSet, Subject + Activity ~ variable, mean)
 
-AvgData = sapply(DataSet, mean)
-write.table(AvgData, file = "course_project.txt", row.name=FALSE)
+
+
+write.table(CastedDataSet, file = "course_project.txt", row.name=FALSE)
